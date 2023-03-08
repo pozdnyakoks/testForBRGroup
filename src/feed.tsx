@@ -52,7 +52,7 @@ export default function Feed() {
     return newsArray.map((item) => {
       return (
         <li key={item.id} className='item'>
-          <Link to={`/news/${item.id}`}>
+          <Link to={`/${item.id}`}>
             <h2 className='item-title'>{item.title}</h2>
           </Link>
           <span className='score'>
@@ -106,7 +106,7 @@ export default function Feed() {
       <ul>{mappedAr}</ul>
 
       <Routes>
-        <Route path='/news/:id' element={<NewsDetail />} />
+        <Route path='/:id' element={<NewsDetail />} />
       </Routes>
     </div>
   );
