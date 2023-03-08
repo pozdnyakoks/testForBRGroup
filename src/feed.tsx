@@ -16,7 +16,41 @@ interface Item {
 }
 
 export default function Feed() {
-  const [newsArray, setNewsArray] = useState<Array<Item>>([]);
+  const [newsArray, setNewsArray] = useState<Array<Item>>([
+    {
+      by: 'pozdn',
+      descendants: 5,
+      id: 111,
+      score: 5,
+      time: 111111,
+      text: 'wow',
+      title: 'title wow',
+      type: 'news',
+    },
+  ]);
+  const [mappedAr, setMappedAr] = useState<Array<JSX.Element>>(mapAr());
+  const [isUpdate, setIsUpdate] = useState(false);
+
+  function getTime(time: number) {
+    const date = new Date(time);
+    const diff = new Date().getTime() - date.getTime();
+    const postTime = new Date(diff);
+
+    if (postTime.getMinutes() < 60) {
+      const minutes = postTime.getMinutes();
+      return minutes === 1 ? `${minutes} minute` : `${minutes} minutes`;
+    } else if (postTime.getHours() < 24) {
+      const hours = postTime.getHours();
+      return hours === 1 ? `${hours} hour` : `${hours} hours`;
+    } else {
+      const day = Math.floor(postTime.getHours() / 24);
+      return day === 1 ? `${day} day` : `${day} days`;
+    }
+  }
+
+  function update() {
+    setIsUpdate((prev) => !prev);
+  }
 
   async function getData() {
     try {
@@ -42,30 +76,49 @@ export default function Feed() {
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [isUpdate]);
 
-  // console.log(newsArray);
-  function getItems() {
-    console.log(newsArray);
-    const news = newsArray.map((item) => {
+  function mapAr() {
+    return newsArray.map((item) => {
       return (
         <li key={item.id} className='item'>
           <Link to={`/news/${item.id}`}>
             <h2 className='item-title'>{item.title}</h2>
           </Link>
-          <span className='score'>{item.score}</span>
-          <span className='author'>{item.by}</span>
-          <span className='date'>{item.time}</span>
+          <span className='score'>
+            {item.score} {item.score === 1 ? 'point' : 'points'}
+          </span>
+          <span className='author'>By {item.by}</span>
+          <span className='date'>{getTime(item.time)} ago</span>
         </li>
       );
     });
-    return news;
   }
+
+  useEffect(() => {
+    setMappedAr(mapAr());
+  }, [newsArray]);
+
+  // const news = newsArray.map((item) => {
+  //   console.log(item);
+  //   return (
+  //     <li key={item.id} className='item'>
+  //       <Link to={`/news/${item.id}`}>
+  //         <h2 className='item-title'>{item.title}</h2>
+  //       </Link>
+  //       <span className='score'>
+  //         {item.score} {item.score === 1 ? 'point' : 'points'}
+  //       </span>
+  //       <span className='author'>By {item.by}</span>
+  //       <span className='date'>{getTime(item.time)} ago</span>
+  //     </li>
+  //   );
+  // });
   return (
     <div>
       <h1>News Feed</h1>
-      <button>Update News</button>
-      <ul>{getItems()}</ul>
+      <button onClick={update}>Update News</button>
+      <ul>{mappedAr}</ul>
 
       <Routes>
         <Route path='/news/:id' element={<NewsDetail />} />
