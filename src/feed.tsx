@@ -48,8 +48,21 @@ export default function Feed() {
     }
   }
 
-  function update() {
-    setIsUpdate((prev) => !prev);
+  function mapAr() {
+    return newsArray.map((item) => {
+      return (
+        <li key={item.id} className='item'>
+          <Link to={`/news/${item.id}`}>
+            <h2 className='item-title'>{item.title}</h2>
+          </Link>
+          <span className='score'>
+            {item.score} {item.score === 1 ? 'point' : 'points'}
+          </span>
+          <span className='author'>By {item.by}</span>
+          <span className='date'>{getTime(item.time)} ago</span>
+        </li>
+      );
+    });
   }
 
   async function getData() {
@@ -74,46 +87,18 @@ export default function Feed() {
     }
   }
 
+  function update() {
+    setIsUpdate((prev) => !prev);
+  }
+
   useEffect(() => {
     getData();
   }, [isUpdate]);
-
-  function mapAr() {
-    return newsArray.map((item) => {
-      return (
-        <li key={item.id} className='item'>
-          <Link to={`/news/${item.id}`}>
-            <h2 className='item-title'>{item.title}</h2>
-          </Link>
-          <span className='score'>
-            {item.score} {item.score === 1 ? 'point' : 'points'}
-          </span>
-          <span className='author'>By {item.by}</span>
-          <span className='date'>{getTime(item.time)} ago</span>
-        </li>
-      );
-    });
-  }
 
   useEffect(() => {
     setMappedAr(mapAr());
   }, [newsArray]);
 
-  // const news = newsArray.map((item) => {
-  //   console.log(item);
-  //   return (
-  //     <li key={item.id} className='item'>
-  //       <Link to={`/news/${item.id}`}>
-  //         <h2 className='item-title'>{item.title}</h2>
-  //       </Link>
-  //       <span className='score'>
-  //         {item.score} {item.score === 1 ? 'point' : 'points'}
-  //       </span>
-  //       <span className='author'>By {item.by}</span>
-  //       <span className='date'>{getTime(item.time)} ago</span>
-  //     </li>
-  //   );
-  // });
   return (
     <div>
       <h1>News Feed</h1>
