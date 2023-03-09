@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Link, Routes, Route, Router } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-import './App.css';
 import NewsDetail from './newsDetail';
 
 interface Item {
@@ -16,6 +15,7 @@ interface Item {
 }
 
 export default function Feed() {
+  // console.log('hhh');
   const [newsArray, setNewsArray] = useState<Array<Item>>([
     {
       by: 'pozdn',
@@ -28,42 +28,42 @@ export default function Feed() {
       type: 'news',
     },
   ]);
-  const [mappedAr, setMappedAr] = useState<Array<JSX.Element>>(mapAr());
-  const [isUpdate, setIsUpdate] = useState(false);
 
   function getTime(time: number) {
-    const date = new Date(time);
-    const diff = new Date().getTime() - date.getTime();
-    const postTime = new Date(diff);
-
-    if (postTime.getMinutes() < 60) {
-      const minutes = postTime.getMinutes();
-      return minutes === 1 ? `${minutes} minute` : `${minutes} minutes`;
-    } else if (postTime.getHours() < 24) {
-      const hours = postTime.getHours();
+    const diff = Date.now() - time * 1000;
+    const minutes = Math.floor((diff / 1000 / 60) % 60);
+    const hours = Math.floor((diff / 1000 / 60 / 60) % 24);
+    const days = Math.floor(diff / 1000 / 60 / 60 / 24);
+    if (days > 1) {
+      return days === 1 ? `${days} day` : `${days} days`;
+    } else if (hours < 24 && hours > 0) {
       return hours === 1 ? `${hours} hour` : `${hours} hours`;
     } else {
-      const day = Math.floor(postTime.getHours() / 24);
-      return day === 1 ? `${day} day` : `${day} days`;
+      return minutes === 1 ? `${minutes} minute` : `${minutes} minutes`;
     }
   }
+  // console.log(newsArray);
 
-  function mapAr() {
-    return newsArray.map((item) => {
+  const items = newsArray
+    .sort((a, b) => {
+      return a.time < b.time ? 1 : a.time > b.time ? -1 : 0;
+    })
+    .map((item) => {
       return (
         <li key={item.id} className='item'>
-          <Link to={`/${item.id}`}>
+          <Link to={`news/${item.id}`} state={{ info: item }}>
             <h2 className='item-title'>{item.title}</h2>
           </Link>
-          <span className='score'>
-            {item.score} {item.score === 1 ? 'point' : 'points'}
-          </span>
-          <span className='author'>By {item.by}</span>
-          <span className='date'>{getTime(item.time)} ago</span>
+          <div className='info'>
+            <span className='score'>
+              {item.score} {item.score === 1 ? 'point' : 'points'}
+            </span>
+            <span className='author'>By {item.by}</span>
+            <span className='date'>{getTime(item.time)} ago</span>
+          </div>
         </li>
       );
     });
-  }
 
   async function getData() {
     try {
@@ -72,8 +72,8 @@ export default function Feed() {
       );
       const news = await response.json();
 
-      const pr = await Promise.all(
-        news.slice(0, 5).map(async (newsItem: Item) => {
+      const promises = await Promise.all(
+        news.slice(0, 100).map(async (newsItem: Item) => {
           const response = await fetch(
             `https://hacker-news.firebaseio.com/v0/item/${newsItem}.json?print=pretty`
           );
@@ -81,33 +81,25 @@ export default function Feed() {
           return data;
         })
       );
-      setNewsArray(pr);
+      setNewsArray(promises);
     } catch (error) {
       console.error(error);
     }
   }
 
-  function update() {
-    setIsUpdate((prev) => !prev);
-  }
-
   useEffect(() => {
     getData();
-  }, [isUpdate]);
+  }, []);
 
-  useEffect(() => {
-    setMappedAr(mapAr());
-  }, [newsArray]);
+  // setTimeout(getData, 60000);
 
   return (
-    <div>
-      <h1>News Feed</h1>
-      <button onClick={update}>Update News</button>
-      <ul>{mappedAr}</ul>
-
-      <Routes>
-        <Route path='/:id' element={<NewsDetail />} />
-      </Routes>
+    <div className='container'>
+      <h1 className='title'>News Feed</h1>
+      <button className='btn' onClick={getData}>
+        Update News
+      </button>
+      <ol className='list'>{items}</ol>
     </div>
   );
 }

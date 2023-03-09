@@ -1,10 +1,15 @@
 import Feed from './feed';
+import NewsDetail from './newsDetail';
+
+import { Routes, Route } from 'react-router-dom';
+import './App.css';
 
 function App() {
   return (
-    <>
-      <Feed />
-    </>
+    <Routes>
+      <Route path='/' element={<Feed />} />
+      <Route path='news/:id' element={<NewsDetail />} />
+    </Routes>
   );
 }
 
