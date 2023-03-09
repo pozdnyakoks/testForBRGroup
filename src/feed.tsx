@@ -1,69 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-
-import NewsDetail from './newsDetail';
-
-interface Item {
-  by: string;
-  descendants: number;
-  id: number;
-  score: number;
-  time: number;
-  text: string;
-  title: string;
-  type: string;
-}
+import { Item } from './components/interfaces';
+import NewsItem from './components/newsItem';
 
 export default function Feed() {
-  // console.log('hhh');
-  const [newsArray, setNewsArray] = useState<Array<Item>>([
-    {
-      by: 'pozdn',
-      descendants: 5,
-      id: 111,
-      score: 5,
-      time: 111111,
-      text: 'wow',
-      title: 'title wow',
-      type: 'news',
-    },
-  ]);
-
-  function getTime(time: number) {
-    const diff = Date.now() - time * 1000;
-    const minutes = Math.floor((diff / 1000 / 60) % 60);
-    const hours = Math.floor((diff / 1000 / 60 / 60) % 24);
-    const days = Math.floor(diff / 1000 / 60 / 60 / 24);
-    if (days > 1) {
-      return days === 1 ? `${days} day` : `${days} days`;
-    } else if (hours < 24 && hours > 0) {
-      return hours === 1 ? `${hours} hour` : `${hours} hours`;
-    } else {
-      return minutes === 1 ? `${minutes} minute` : `${minutes} minutes`;
-    }
-  }
-  // console.log(newsArray);
+  const [newsArray, setNewsArray] = useState<Array<Item>>([]);
 
   const items = newsArray
     .sort((a, b) => {
       return a.time < b.time ? 1 : a.time > b.time ? -1 : 0;
     })
-    .map((item) => {
-      return (
-        <li key={item.id} className='item'>
-          <Link to={`news/${item.id}`} state={{ info: item }}>
-            <h2 className='item-title'>{item.title}</h2>
-          </Link>
-          <div className='info'>
-            <span className='score'>
-              {item.score} {item.score === 1 ? 'point' : 'points'}
-            </span>
-            <span className='author'>By {item.by}</span>
-            <span className='date'>{getTime(item.time)} ago</span>
-          </div>
-        </li>
-      );
-    });
+    .map(NewsItem);
 
   async function getData() {
     try {
@@ -91,7 +37,7 @@ export default function Feed() {
     getData();
   }, []);
 
-  // setTimeout(getData, 60000);
+  setTimeout(getData, 60000);
 
   return (
     <div className='container'>
@@ -99,7 +45,7 @@ export default function Feed() {
       <button className='btn' onClick={getData}>
         Update News
       </button>
-      <ol className='list'>{items}</ol>
+      {items.length > 0 ? <ol className='list'>{items}</ol> : 'Loading...'}
     </div>
   );
 }

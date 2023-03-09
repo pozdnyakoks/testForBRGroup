@@ -10,6 +10,24 @@ body {
   color: #A5B2D3;
 }
 
+/* 
+button {
+
+} */
+
+button,
+.btn {
+  border: none;
+  background: #FC85AE;
+  color: #303A52;
+  font-weight: bold;
+  font-size: 1em;
+  border-radius: 0.2em;
+  transition: .3s ease;
+  cursor: pointer;
+  box-shadow: 0 0 2px 2px #303A52;
+}
+
 a {
   text-decoration: none;
   color: white;
@@ -45,19 +63,9 @@ ol li::marker {
   position: absolute;
   top: 8%;
   right: 15%;
-  border: none;
   margin-left: 65%;
-  background: #FC85AE;
-  /* display: block; */
-  color: #303A52;
-  font-weight: bold;
-  font-size: 1em;
   padding: 1em 1.5em;
-  border-radius: 0.2em;
   transform: rotate(27deg);
-  transition: .3s ease;
-  cursor: pointer;
-  box-shadow: 0 0 2px 2px #303A52;
 }
 
 
@@ -71,5 +79,28 @@ ol li::marker {
 }
 
 .item {
+  margin-bottom: 1rem;
+}
+
+.source-link {
+  font-size: 2rem;
+
+}
+
+.comments-title {
+  margin: 1rem 0 .5rem;
+}
+
+.discuss {
+  margin: 1rem 0;
+  padding: .3rem .6rem;
+  display: block;
+}
+
+.text {
+  color: white;
+}
+
+.comment {
   margin-bottom: 1rem;
 }
