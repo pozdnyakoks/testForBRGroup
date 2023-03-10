@@ -1,5 +1,5 @@
-import Feed from './pages/feed';
-import NewsDetail from './pages/newsDetail';
+import Feed from './pages/Feed';
+import NewsDetail from './pages/NewsDetail';
 
 import { Routes, Route } from 'react-router-dom';
 import './index.css';
