@@ -2,7 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Kid } from '../helpers/interfaces';
 import { postDate } from '../helpers/postDate';
-import Comment from '../components/Comment';
+import Comment from '../components/comment';
 import getDataApi from '../helpers/getDataApi';
 
 const defaultObj: Kid = {
