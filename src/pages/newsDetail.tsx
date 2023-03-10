@@ -19,6 +19,11 @@ const defaultObj: Kid = {
 export default function NewsDetail() {
   const [comments, setComments] = useState<Array<Kid>>([defaultObj]);
   const [isError, setIsError] = useState(false);
+  const [isClicked, setIsclicked] = useState(false);
+
+  function toggle() {
+    setIsclicked((prev) => !prev);
+  }
 
   const info = useLocation();
   const { url, title, time, by, descendants, kids } = info.state.info;
@@ -51,7 +56,16 @@ export default function NewsDetail() {
         .sort((a, b) => {
           return a.time < b.time ? -1 : a.time > b.time ? 1 : 0;
         })
-        .map(Comment);
+        .map((comment) => {
+          return (
+            <Comment
+              key={comment.id}
+              comment={comment}
+              toggle={toggle}
+              isClicked={isClicked}
+            />
+          );
+        });
 
   return (
     <div className='container'>
