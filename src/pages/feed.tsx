@@ -4,7 +4,7 @@ import NewsItem from '../components/NewsItem';
 import getDataApi from '../helpers/getDataApi';
 
 export default function Feed() {
-  const storageData = JSON.parse(localStorage.getItem('news') as string) || [];
+  const storageData = JSON.parse(localStorage.news as string) || [];
   const [newsArray, setNewsArray] = useState<Array<Item>>(storageData);
   const [isError, setIsError] = useState(false);
 
@@ -15,27 +15,26 @@ export default function Feed() {
     .map(NewsItem);
 
   async function getData() {
+    setNewsArray([]);
     try {
       const response = await fetch(
         'https://hacker-news.firebaseio.com/v0/newstories.json?print=pretty/'
       );
       const news = await response.json();
       const promises = await Promise.all(news.slice(0, 100).map(getDataApi));
-      setNewsArray(promises);
-
-      localStorage.setItem('news', JSON.stringify(newsArray));
+      if (promises !== newsArray) setNewsArray(promises);
+      localStorage.news = JSON.stringify(newsArray);
     } catch (error) {
-      setIsError(true);
       console.error(error);
+      setIsError(true);
     }
   }
 
   useEffect(() => {
     getData();
-    // const news = JSON.parse(localStorage.getItem('news') as string);
-    // setNewsArray(news);
   }, []);
 
+  // update news once in a minute
   setTimeout(getData, 60000);
 
   return (

@@ -5,19 +5,19 @@ import { postDate } from '../helpers/postDate';
 import Comment from '../components/Comment';
 import getDataApi from '../helpers/getDataApi';
 
+const defaultObj: Kid = {
+  by: '',
+  id: 9,
+  kids: [],
+  parent: 0,
+  text: '',
+  time: 0,
+  type: '',
+  loading: true,
+};
+
 export default function NewsDetail() {
-  const [comments, setComments] = useState<Array<Kid>>([
-    {
-      by: '',
-      id: 9,
-      kids: [],
-      parent: 0,
-      text: '',
-      time: 0,
-      type: '',
-      loading: true,
-    },
-  ]);
+  const [comments, setComments] = useState<Array<Kid>>([defaultObj]);
   const [isError, setIsError] = useState(false);
 
   const info = useLocation();
@@ -26,20 +26,23 @@ export default function NewsDetail() {
   const date = new Date(time * 1000);
   const postDateInfo = postDate(date);
 
+  // console.log(info.state.info);
+
   async function getComments() {
-    try {
-      const promises = await Promise.all(kids.map(getDataApi));
-      setComments(promises);
-      console.log(comments);
-    } catch (error) {
-      setIsError(true);
+    if (descendants > 0) {
+      try {
+        setComments([defaultObj]);
+        const promises = await Promise.all(kids.map(getDataApi));
+        setComments(promises);
+      } catch (error) {
+        console.log(error);
+        setIsError(true);
+      }
     }
   }
 
   useEffect(() => {
-    if (descendants > 0) {
-      getComments();
-    }
+    getComments();
   }, []);
 
   const commentsList = comments.some((comment) => comment.loading)

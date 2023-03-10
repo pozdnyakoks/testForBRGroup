@@ -1,25 +1,18 @@
-import { useState } from 'react';
-
 import { Kid } from '../helpers/interfaces';
 import { postDate } from '../helpers/postDate';
 import decode from '../helpers/decode';
+import getDataApi from '../helpers/getDataApi';
+
+import { useState } from 'react';
 
 export default function Comment(comment: Kid) {
-  async function getReplies(kids: number[]) {
+  // console.log(comment);
+  async function getData() {
     try {
-      const promises = await Promise.all(
-        kids.map(async (kid) => {
-          const response = await fetch(
-            `https://hacker-news.firebaseio.com/v0/item/${kid}.json?print=pretty`
-          );
-          const data = await response.json();
-          return data;
-        })
-      );
-      // return data;
-      // console.log(promises);
+      const promises = await Promise.all(comment.kids.map(getDataApi));
+      console.log(promises);
 
-      //  setComments(promises);
+      return promises;
     } catch (error) {
       console.error(error);
     }
@@ -38,10 +31,20 @@ export default function Comment(comment: Kid) {
         <p>{comment.text !== '[dead]' ? decode(comment.text) : 'deleted'}</p>
 
         {comment.hasOwnProperty('kids') && comment.text !== '[dead]' && (
-          <button onClick={() => getReplies(comment.kids)} className='discuss'>
-            {comment.kids.length} comments
+          <button onClick={getData} className='discuss'>
+            {comment.kids.length}{' '}
+            {comment.kids.length === 1 ? 'comment' : 'comments'}
           </button>
         )}
+
+        {/* {comment.kids.length > 0 && ( */}
+        <ul>
+          {
+            /* //   <Comment render={ */
+            //     return (comment.kids).map(getData)/>
+          }
+        </ul>
+        {/* )} */}
       </li>
     )
   );
