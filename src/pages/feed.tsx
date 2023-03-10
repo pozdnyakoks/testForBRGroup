@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Item } from '../helpers/interfaces';
-import NewsItem from './../components/NewsItem';
+import NewsItem from '../components/NewsItem';
 import getDataApi from '../helpers/getDataApi';
 
 export default function Feed() {
