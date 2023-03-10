@@ -23,7 +23,7 @@ export default function Comment(comment: Kid) {
           </button>
         )}
 
-        {comment.kids.length > 0 && (
+        {replies > 0 && (
           <ul>
             {/* {comment.kids.map((id: number) => {
                 <Comment item={getDataApi(id)} />;
