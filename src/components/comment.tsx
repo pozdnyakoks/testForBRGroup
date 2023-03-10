@@ -3,21 +3,7 @@ import { postDate } from '../helpers/postDate';
 import decode from '../helpers/decode';
 import getDataApi from '../helpers/getDataApi';
 
-import { useState } from 'react';
-
 export default function Comment(comment: Kid) {
-  // console.log(comment);
-  async function getData() {
-    try {
-      const promises = await Promise.all(comment.kids.map(getDataApi));
-      console.log(promises);
-
-      return promises;
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
   const commentDate = new Date(comment.time * 1000);
   const commentDateInfo = postDate(commentDate);
   return (
@@ -31,20 +17,19 @@ export default function Comment(comment: Kid) {
         <p>{comment.text !== '[dead]' ? decode(comment.text) : 'deleted'}</p>
 
         {comment.hasOwnProperty('kids') && comment.text !== '[dead]' && (
-          <button onClick={getData} className='discuss'>
+          <button className='discuss'>
             {comment.kids.length}{' '}
             {comment.kids.length === 1 ? 'comment' : 'comments'}
           </button>
         )}
 
-        {/* {comment.kids.length > 0 && ( */}
-        <ul>
-          {
-            /* //   <Comment render={ */
-            //     return (comment.kids).map(getData)/>
-          }
-        </ul>
-        {/* )} */}
+        {comment.kids.length > 0 && (
+          <ul>
+            {/* {comment.kids.map((id: number) => {
+                <Comment item={getDataApi(id)} />;
+              })} */}
+          </ul>
+        )}
       </li>
     )
   );
