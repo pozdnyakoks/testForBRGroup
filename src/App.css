@@ -10,11 +10,6 @@ body {
   color: #A5B2D3;
 }
 
-/* 
-button {
-
-} */
-
 button,
 .btn {
   border: none;
@@ -26,6 +21,12 @@ button,
   transition: .3s ease;
   cursor: pointer;
   box-shadow: 0 0 2px 2px #303A52;
+  transition: .3s ease;
+  ;
+}
+
+button:hover {
+  opacity: .8;
 }
 
 a {

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import getTime from './getTime';
-import { Item } from './interfaces';
+import getTime from '../helpers/getTime';
+import { Item } from '../helpers/interfaces';
 
 export default function NewsItem(item: Item) {
   return (

@@ -1,11 +1,24 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { Kid } from './components/interfaces';
-import { postDate } from './components/postDate';
-import Comment from './components/comment';
+import { Kid } from '../helpers/interfaces';
+import { postDate } from '../helpers/postDate';
+import Comment from '../components/Comment';
+import getDataApi from '../helpers/getDataApi';
 
 export default function NewsDetail() {
-  const [comments, setComments] = useState<Array<Kid>>([]);
+  const [comments, setComments] = useState<Array<Kid>>([
+    {
+      by: '',
+      id: 9,
+      kids: [],
+      parent: 0,
+      text: '',
+      time: 0,
+      type: '',
+      loading: true,
+    },
+  ]);
+  const [isError, setIsError] = useState(false);
 
   const info = useLocation();
   const { url, title, time, by, descendants, kids } = info.state.info;
@@ -15,18 +28,11 @@ export default function NewsDetail() {
 
   async function getComments() {
     try {
-      const promises = await Promise.all(
-        kids.map(async (kid: number) => {
-          const response = await fetch(
-            `https://hacker-news.firebaseio.com/v0/item/${kid}.json?print=pretty`
-          );
-          const data = await response.json();
-          return data;
-        })
-      );
+      const promises = await Promise.all(kids.map(getDataApi));
       setComments(promises);
+      console.log(comments);
     } catch (error) {
-      console.error(error);
+      setIsError(true);
     }
   }
 
@@ -36,13 +42,13 @@ export default function NewsDetail() {
     }
   }, []);
 
-  console.log(comments);
-
-  const commentsList = comments
-    .sort((a, b) => {
-      return a.time < b.time ? -1 : a.time > b.time ? 1 : 0;
-    })
-    .map(Comment);
+  const commentsList = comments.some((comment) => comment.loading)
+    ? 'Loading...'
+    : comments
+        .sort((a, b) => {
+          return a.time < b.time ? -1 : a.time > b.time ? 1 : 0;
+        })
+        .map(Comment);
 
   return (
     <div className='container'>
@@ -62,7 +68,11 @@ export default function NewsDetail() {
       </button>
       <h3 className='comments-title'>Comments:</h3>
 
-      <ul>{commentsList.length > 0 ? commentsList : 'No comments'}</ul>
+      {isError ? (
+        'Something went wrong... Try to reload page'
+      ) : (
+        <ul>{descendants === 0 ? 'No comments' : commentsList}</ul>
+      )}
     </div>
   );
 }

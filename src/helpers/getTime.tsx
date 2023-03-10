@@ -1,4 +1,5 @@
 export default function getTime(time: number) {
+  // console.log(new Date(time * 1000));
   const diff = Date.now() - time * 1000;
   const minutes = Math.floor((diff / 1000 / 60) % 60);
   const hours = Math.floor((diff / 1000 / 60 / 60) % 24);
