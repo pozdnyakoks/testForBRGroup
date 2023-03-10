@@ -17,4 +17,6 @@ export interface Kid {
   text: string;
   time: number;
   type: string;
+  deleted?: boolean;
+  loading?: boolean;
 }
