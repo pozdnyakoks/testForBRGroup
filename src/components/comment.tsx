@@ -6,6 +6,7 @@ import getDataApi from '../helpers/getDataApi';
 export default function Comment(comment: Kid) {
   const commentDate = new Date(comment.time * 1000);
   const commentDateInfo = postDate(commentDate);
+  const replies = comment.kids ? comment.kids.length : 0;
   return (
     !comment.deleted && (
       <li key={comment.id} className='comment'>
@@ -18,8 +19,7 @@ export default function Comment(comment: Kid) {
 
         {comment.hasOwnProperty('kids') && comment.text !== '[dead]' && (
           <button className='discuss'>
-            {comment.kids.length}{' '}
-            {comment.kids.length === 1 ? 'comment' : 'comments'}
+            {replies} {replies === 1 ? 'comment' : 'comments'}
           </button>
         )}
 

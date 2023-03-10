@@ -14,11 +14,14 @@ export default function Feed() {
   const [newsArray, setNewsArray] = useState<Array<Item>>(storageData);
   const [isError, setIsError] = useState(false);
 
-  const items = newsArray
-    .sort((a, b) => {
-      return a.time < b.time ? 1 : a.time > b.time ? -1 : 0;
-    })
-    .map(NewsItem);
+  const items =
+    newsArray.length > 0
+      ? newsArray
+          .sort((a, b) => {
+            return a.time < b.time ? 1 : a.time > b.time ? -1 : 0;
+          })
+          .map(NewsItem)
+      : [];
 
   async function getData() {
     setNewsArray([]);
