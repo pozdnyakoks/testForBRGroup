@@ -4,9 +4,13 @@ import NewsItem from '../components/newsItem';
 import getDataApi from '../helpers/getDataApi';
 
 export default function Feed() {
-  const storageData = JSON.parse(localStorage.news as string)
-    ? JSON.parse(localStorage.news as string)
-    : [];
+  let storageData = [];
+  try {
+    storageData = JSON.parse(localStorage.news as string);
+  } catch (er) {
+    console.log(er);
+  }
+
   const [newsArray, setNewsArray] = useState<Array<Item>>(storageData);
   const [isError, setIsError] = useState(false);
 
