@@ -105,3 +105,7 @@ ol li::marker {
 .comment {
   margin-bottom: 1rem;
 }
+
+.pl {
+  padding-left: 1rem;
+}

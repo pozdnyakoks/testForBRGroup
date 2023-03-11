@@ -11,7 +11,6 @@ export default function Comment({ comment }: { comment: Kid }) {
   async function toggle(kids: number[], parent: Number) {
     setIsclicked((prev) => !prev);
 
-    console.log('kids:', kids);
     const repliesAr = await Promise.all(kids.map(getDataApi));
 
     setReplies((prev) => {
@@ -20,7 +19,6 @@ export default function Comment({ comment }: { comment: Kid }) {
       });
       return prev.concat(newReplies);
     });
-    // }
   }
 
   const commentDate = new Date(comment.time * 1000);
@@ -51,7 +49,7 @@ export default function Comment({ comment }: { comment: Kid }) {
         )}
 
         {comment.kids && isClicked && (
-          <ul>
+          <ul className='pl'>
             {replies.map((reply: Kid) => {
               return <Comment key={reply.id} comment={reply} />;
             })}
