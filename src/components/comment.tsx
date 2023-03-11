@@ -1,25 +1,28 @@
-import { useEffect } from 'react';
+import { useState } from 'react';
 import { Kid } from '../helpers/interfaces';
 import { postDate } from '../helpers/postDate';
 import decode from '../helpers/decode';
 import getDataApi from '../helpers/getDataApi';
 
-export default function Comment({
-  comment,
-  toggle,
-  isClicked,
-}: {
-  comment: Kid;
-  toggle: Function;
-  isClicked: boolean;
-}) {
+export default function Comment({ comment }: { comment: Kid }) {
+  const [isClicked, setIsclicked] = useState(false);
+  const [replies, setReplies] = useState<Array<Kid>>([]);
+
+  async function toggle(kids: number[], parent: Number) {
+    setIsclicked((prev) => !prev);
+
+    const repliesAr = await Promise.all(kids.map(getDataApi));
+
+    setReplies((prev) => {
+      const newReplies = repliesAr.filter((reply) => {
+        return !replies.some((rep) => rep.id === reply.id);
+      });
+      return prev.concat(newReplies);
+    });
+  }
+
   const commentDate = new Date(comment.time * 1000);
   const commentDateInfo = postDate(commentDate);
-  const replies = comment.kids ? comment.kids.length : 0;
-
-  const repliesAr = comment.kids
-    ? comment.kids.map((id: number) => getDataApi(id))
-    : [];
 
   if (comment.deleted) {
     return <li>Deleted</li>;
@@ -33,26 +36,23 @@ export default function Comment({
         <p className='text'>Comment:</p>
         <p>{comment.text !== '[dead]' ? decode(comment.text) : 'deleted'}</p>
 
-        {comment.hasOwnProperty('kids') &&
-          comment.text !== '[dead]' &&
-          !isClicked && (
-            <button onClick={() => toggle()} className='discuss'>
-              {replies} {replies === 1 ? 'comment' : 'comments'}
-            </button>
-          )}
+        {comment.kids && comment.text !== '[dead]' && (
+          <button
+            onClick={() => toggle(comment.kids, comment.parent)}
+            className='discuss'
+          >
+            {!isClicked
+              ? `${comment.kids.length}
+              ${comment.kids.length === 1 ? 'comment' : 'comments'}`
+              : 'hide'}
+          </button>
+        )}
 
-        {isClicked && replies && (
-          <ul>
-            {/* {repliesAr.map((reply: Kid) => {
-              return (
-                <Comment
-                  key={reply.id}
-                  comment={reply}
-                  toggle={toggle}
-                  isClicked={false}
-                />
-              );
-            })} */}
+        {comment.kids && isClicked && (
+          <ul className='pl'>
+            {replies.map((reply: Kid) => {
+              return <Comment key={reply.id} comment={reply} />;
+            })}
           </ul>
         )}
       </li>

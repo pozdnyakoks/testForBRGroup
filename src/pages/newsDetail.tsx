@@ -19,19 +19,12 @@ const defaultObj: Kid = {
 export default function NewsDetail() {
   const [comments, setComments] = useState<Array<Kid>>([defaultObj]);
   const [isError, setIsError] = useState(false);
-  const [isClicked, setIsclicked] = useState(false);
-
-  function toggle() {
-    setIsclicked((prev) => !prev);
-  }
 
   const info = useLocation();
   const { url, title, time, by, descendants, kids } = info.state.info;
 
   const date = new Date(time * 1000);
   const postDateInfo = postDate(date);
-
-  // console.log(info.state.info);
 
   async function getComments() {
     if (descendants > 0) {
@@ -57,14 +50,7 @@ export default function NewsDetail() {
           return a.time < b.time ? -1 : a.time > b.time ? 1 : 0;
         })
         .map((comment) => {
-          return (
-            <Comment
-              key={comment.id}
-              comment={comment}
-              toggle={toggle}
-              isClicked={isClicked}
-            />
-          );
+          return <Comment key={comment.id} comment={comment} />;
         });
 
   return (
@@ -93,11 +79,3 @@ export default function NewsDetail() {
     </div>
   );
 }
-
-// by: 'wunderland';
-// id: 35075873;
-// kids: (2)[(35076027, 35076112)];
-// parent: 35075702;
-// text: 'Misleading headline which is not supported by the data presented; believing that the US has provoked this war and a desire for an end to the war that doesn’t involve NATO expansion is not support for Russia.';
-// time: 1678315744;
-// type: 'comment';
