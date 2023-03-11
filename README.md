@@ -2,6 +2,8 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+You can try it with Netlify [here](https://earnest-starlight-8f24a6.netlify.app/)
+
 ## Available Scripts
 
 In the project directory, you can run:
